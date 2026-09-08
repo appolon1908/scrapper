@@ -124,6 +124,8 @@ jobs:
         run: bash scripts/verify-release-image.sh "$PREVIOUS_IMAGE_REF" "$IMAGE_RELATIONSHIP"
 
   runtime_preflight:
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     name: runtime-preflight
     needs: verify_artifact
     runs-on: ubuntu-24.04
@@ -192,6 +194,8 @@ jobs:
           retention-days: 30
 
   deploy:
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     name: deploy
     needs: [verify_artifact, runtime_preflight]
     runs-on: ubuntu-24.04

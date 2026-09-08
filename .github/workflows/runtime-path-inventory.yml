@@ -35,6 +35,8 @@ concurrency:
 
 jobs:
   inventory:
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: ${{ format('{0}-runtime-audit', inputs.target) }}
