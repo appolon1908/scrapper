@@ -4,3 +4,8 @@ paths:
       # This publishing job is intentionally fail-closed for a zero-image
       # migration-evidence repository.
       - 'constant expression "false" in condition'
+  .github/workflows/configure-release-protection.yml:
+    ignore:
+      # This legacy governance job cannot mutate branch policy from a
+      # migration-evidence repository.
+      - 'constant expression "false" in condition'

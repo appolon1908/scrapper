@@ -32,6 +32,8 @@ jobs:
           exit 1
 
   protect:
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     needs: authority_gate
     runs-on: ubuntu-24.04
     timeout-minutes: 10
