@@ -140,6 +140,8 @@ jobs:
 
   publish:
     name: publish
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     needs: [verify, deployment-policy, branch-governance, gateway-validation]
     runs-on: ubuntu-24.04
     timeout-minutes: 45

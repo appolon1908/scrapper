@@ -1,0 +1,6 @@
+paths:
+  .github/workflows/release-readiness.yml:
+    ignore:
+      # This publishing job is intentionally fail-closed for a zero-image
+      # migration-evidence repository.
+      - 'constant expression "false" in condition'
