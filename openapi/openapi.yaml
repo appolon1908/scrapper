@@ -801,7 +801,7 @@ paths:
         '202':
           description: Accepted
         '409':
-          description: Capability disabled or conflict
+          description: Source changed during validation (source_version_conflict); retry validation against the current source.
   /api/v2/schedules/{id}/pause:
     post:
       summary: Command /api/v2/schedules/{id}/pause

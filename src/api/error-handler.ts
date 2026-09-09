@@ -16,6 +16,7 @@ const KNOWN_ERRORS: Record<string, { statusCode: number; code: string }> = {
   not_found: { statusCode: 404, code: 'not_found' },
   job_not_found: { statusCode: 404, code: 'not_found' },
   invalid_cursor: { statusCode: 400, code: 'invalid_cursor' },
+  source_version_conflict: { statusCode: 409, code: 'source_version_conflict' },
   invalid_tenant_transition: { statusCode: 409, code: 'invalid_tenant_transition' },
 };
 

@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import dns from 'node:dns/promises';
+import { assertPublicHttpUrl } from '../security/url-policy.js';
 import { pool, withTransaction } from './db.js';
 import { insertAudit } from './audit-repository.js';
 
@@ -82,7 +82,7 @@ export class ControlPlaneRepository {
       const id = crypto.randomUUID();
       const r = await c.query(
         `insert into tenant_sources(id,tenant_id,name,source_type,seed_urls,status) values($1,$2,$3,$4,$5,$6) returning *`,
-        [id, t, input.name, input.sourceType, input.seedUrls, input.status],
+        [id, t, input.name, input.sourceType, JSON.stringify(input.seedUrls), input.status],
       );
       await audit(c, ctx, 'source.created', 'source', id);
       return r.rows[0];
@@ -99,7 +99,14 @@ export class ControlPlaneRepository {
     return withTransaction(async (c) => {
       const r = await c.query(
         `update tenant_sources set name=coalesce($4,name),seed_urls=coalesce($5,seed_urls),status=coalesce($6,status),validation_status=case when $5::jsonb is null then validation_status else 'not_checked' end,version=version+1,updated_at=now() where tenant_id=$1 and id=$2 and version=$3 returning *`,
-        [t, id, input.version, input.name || null, input.seedUrls || null, input.status || null],
+        [
+          t,
+          id,
+          input.version,
+          input.name || null,
+          input.seedUrls === undefined ? null : JSON.stringify(input.seedUrls),
+          input.status || null,
+        ],
       );
       if (!r.rows[0]) return null;
       await audit(c, ctx, 'source.updated', 'source', id);
@@ -114,10 +121,7 @@ export class ControlPlaneRepository {
     const checks: Array<{ url: string; valid: boolean; error?: string }> = [];
     for (const raw of s.seed_urls) {
       try {
-        const u = new URL(raw);
-        if (!['http:', 'https:'].includes(u.protocol) || u.username || u.password)
-          throw new Error('invalid_url');
-        await dns.lookup(u.hostname);
+        await assertPublicHttpUrl(raw);
         checks.push({ url: raw, valid: true });
       } catch (e) {
         checks.push({ url: raw, valid: false, error: e instanceof Error ? e.message : String(e) });
@@ -126,9 +130,10 @@ export class ControlPlaneRepository {
     const valid = checks.every((x) => x.valid);
     return withTransaction(async (c) => {
       const r = await c.query(
-        `update tenant_sources set validation_status=$3,validation_details=$4,last_validated_at=now(),version=version+1,updated_at=now() where tenant_id=$1 and id=$2 returning *`,
-        [t, id, valid ? 'valid' : 'invalid', { checks }],
+        `update tenant_sources set validation_status=$3,validation_details=$4,last_validated_at=now(),version=version+1,updated_at=now() where tenant_id=$1 and id=$2 and version=$5 returning *`,
+        [t, id, valid ? 'valid' : 'invalid', { checks }, s.version],
       );
+      if (!r.rows[0]) throw new Error('source_version_conflict');
       await audit(c, ctx, 'source.validated', 'source', id, { valid });
       return r.rows[0];
     });
