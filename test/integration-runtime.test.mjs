@@ -16,9 +16,8 @@ const { Client } = pgModule.default;
 const { pool, rollbackLastMigration, runMigrations } = await import('../dist/persistence/db.js');
 const { Repository } = await import('../dist/persistence/repository.js');
 const { CrawlJobRequestSchema } = await import('../dist/domain/schemas.js');
-const { closeQueues, crawlQueue, crawlQueueJobId, enqueueCrawlJob } = await import(
-  '../dist/queues.js'
-);
+const { closeQueues, crawlQueue, crawlQueueJobId, enqueueCrawlJob } =
+  await import('../dist/queues.js');
 
 const expectedMigrations = [
   '001_initial.sql',
