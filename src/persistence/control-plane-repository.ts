@@ -98,7 +98,7 @@ export class ControlPlaneRepository {
   async updateSource(t: string, id: string, input: any, ctx: any) {
     return withTransaction(async (c) => {
       const r = await c.query(
-        `update tenant_sources set name=coalesce($4,name),seed_urls=coalesce($5,seed_urls),status=coalesce($6,status),validation_status=case when $5::jsonb is null then validation_status else 'not_checked' end,version=version+1,updated_at=now() where tenant_id=$1 and id=$2 and version=$3 returning *`,
+        `update tenant_sources set name=coalesce($4,name),seed_urls=coalesce($5,seed_urls),status=coalesce($6,status),validation_status=case when $5::jsonb is null then validation_status else 'not_checked' end,validation_details=case when $5::jsonb is null then validation_details else '{}'::jsonb end,last_validated_at=case when $5::jsonb is null then last_validated_at else null end,version=version+1,updated_at=now() where tenant_id=$1 and id=$2 and version=$3 returning *`,
         [
           t,
           id,
