@@ -41,7 +41,7 @@ Preserves the historical multi-tenant business website crawler and CRM-enrichmen
 
 ## Governance and safety
 
-- Target promotion model: `feature/docs/fix/security/upgrade -> development -> test -> staging -> production -> main`.
+- Follow `MISSION.md`: `main` is the only long-lived branch; use one temporary branch per phase and merge through a reviewed pull request.
 - Use pull requests and exact-head/merge-result validation; merging source never authorizes deployment.
 - Never commit secrets, credentials, private keys, customer data, database dumps, or secret-bearing evidence.
 - Production images and releases must be immutable; mutable `latest` tags are not release authority.
