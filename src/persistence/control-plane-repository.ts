@@ -8,7 +8,7 @@ const page = (rows: any[], limit: number, key = 'id') => ({
   nextCursor: rows.length > limit ? String(rows[limit - 1]?.[key] || '') : null,
 });
 const search = (value?: string) =>
-  value?.trim() ? `%${value.trim().replaceAll('%', '\\%').replaceAll('_', '\\_')}%` : null;
+  value?.trim() ? `%${value.trim().replace(/[\\%_]/g, '\\$&')}%` : null;
 async function audit(
   client: any,
   ctx: any,
