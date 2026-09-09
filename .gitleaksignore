@@ -1,2 +1,4 @@
 # Reviewed SHA-256 of a read-only OpenAPI validator; not credential material.
 7bccf313b17feddd99cdb6a1318259579c2477d1:.codestra/validate-production-orchestrator-contract.py:generic-api-key:389
+# Reviewed SHA-256 of a dashboard API-client test fixture; not credential material.
+c41d5ba56399492147f29ed401fe35b334417da1:.codestra/validate-production-orchestrator-contract.py:generic-api-key:323
