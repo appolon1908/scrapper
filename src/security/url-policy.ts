@@ -29,7 +29,6 @@ export function normalizeUrl(raw: string): string {
 
 export function isProhibitedAddress(address: string): boolean {
   const normalized = address.toLowerCase();
-  if (normalized.startsWith('::ffff:')) return isProhibitedAddress(normalized.slice(7));
 
   if (net.isIPv4(normalized)) {
     const octets = normalized.split('.').map(Number);
@@ -43,6 +42,7 @@ export function isProhibitedAddress(address: string): boolean {
       (a === 172 && b >= 16 && b <= 31) ||
       (a === 192 && b === 0 && c === 0) ||
       (a === 192 && b === 168) ||
+      (a === 192 && b === 0 && c === 2) ||
       (a === 198 && (b === 18 || b === 19)) ||
       (a === 198 && b === 51 && c === 100) ||
       (a === 203 && b === 0 && c === 113) ||
@@ -50,17 +50,28 @@ export function isProhibitedAddress(address: string): boolean {
     );
   }
 
-  if (!net.isIPv6(normalized)) return true;
+  if (!net.isIPv6(normalized) || normalized.includes('%')) return true;
+  // Canonicalize equivalent IPv6 spellings before applying address restrictions.
+  const canonical = new URL(`http://[${normalized}]/`).hostname.slice(1, -1);
+  if (canonical.startsWith('::ffff:')) {
+    const words = canonical
+      .slice(7)
+      .split(':')
+      .map((part) => Number.parseInt(part, 16));
+    const [high = 0, low = 0] = words;
+    return isProhibitedAddress(`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}`);
+  }
   return (
-    normalized === '::' ||
-    normalized === '::1' ||
-    normalized.startsWith('fc') ||
-    normalized.startsWith('fd') ||
-    normalized.startsWith('fe8') ||
-    normalized.startsWith('fe9') ||
-    normalized.startsWith('fea') ||
-    normalized.startsWith('feb') ||
-    normalized.startsWith('2001:db8:')
+    canonical === '::' ||
+    canonical === '::1' ||
+    canonical.startsWith('fc') ||
+    canonical.startsWith('fd') ||
+    canonical.startsWith('fe8') ||
+    canonical.startsWith('fe9') ||
+    canonical.startsWith('fea') ||
+    canonical.startsWith('feb') ||
+    canonical.startsWith('2001:db8:') ||
+    canonical.startsWith('ff')
   );
 }
 
@@ -72,9 +83,10 @@ export async function assertPublicHttpUrl(raw: string): Promise<URL> {
   const port = url.port ? Number(url.port) : url.protocol === 'https:' ? 443 : 80;
   if (![80, 443].includes(port)) throw new Error('destination_port_rejected');
 
-  const resolved = net.isIP(url.hostname)
-    ? [{ address: url.hostname }]
-    : await dns.lookup(url.hostname, { all: true, verbatim: true });
+  const hostname = url.hostname.startsWith('[') ? url.hostname.slice(1, -1) : url.hostname;
+  const resolved = net.isIP(hostname)
+    ? [{ address: hostname }]
+    : await dns.lookup(hostname, { all: true, verbatim: true });
   if (!resolved.length || resolved.some((item) => isProhibitedAddress(item.address))) {
     throw new Error('private_destination_rejected');
   }
