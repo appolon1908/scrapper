@@ -39,14 +39,21 @@ class PrincipalRegistry {
 
     for (const principal of principals) {
       if (
-        !principal.clientId ||
-        !principal.tenantId ||
+        !principal ||
+        typeof principal.clientId !== 'string' ||
+        !principal.clientId.trim() ||
+        typeof principal.tenantId !== 'string' ||
+        !principal.tenantId.trim() ||
+        typeof principal.enabled !== 'boolean' ||
         !Array.isArray(principal.scopes) ||
         principal.scopes.some((scope) => typeof scope !== 'string' || !scope)
       ) {
         throw new Error('invalid_service_principal_registry');
       }
-      if (!/^[a-f0-9]{64}$/i.test(principal.tokenSha256)) {
+      if (
+        typeof principal.tokenSha256 !== 'string' ||
+        !/^[a-f0-9]{64}$/i.test(principal.tokenSha256)
+      ) {
         throw new Error(`invalid_principal_digest:${principal.clientId}`);
       }
 

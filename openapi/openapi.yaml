@@ -8,6 +8,11 @@ info:
 
     not claim that the service has been deployed to production.
 
+    Malformed JSON returns 400 (invalid_json), oversized request bodies return
+    413 (payload_too_large), and unsupported media types return 415
+    (unsupported_media_type). These parser error responses include a request_id and never
+    expose unexpected internal exception messages.
+
     '
 servers:
   - url: /
@@ -109,6 +114,10 @@ paths:
             schema:
               $ref: '#/components/schemas/CrawlJobRequest'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Existing idempotent job
           content:
@@ -181,6 +190,10 @@ paths:
             schema:
               $ref: '#/components/schemas/CrawlJobRequest'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Existing idempotent job
           content:
@@ -841,6 +854,18 @@ components:
         type: string
         format: uuid
   responses:
+    PayloadTooLarge:
+      description: Request body exceeds the configured limit (payload_too_large)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnsupportedMediaType:
+      description: Request content type is unsupported (unsupported_media_type)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Invalid request
       content:
