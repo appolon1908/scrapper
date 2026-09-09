@@ -319,6 +319,8 @@ APPROVED_COMPLEX_SCRIPT_SHA256: dict[str, dict[str, str]] = {
         ),
     },
     "appolon1908-hue/scrapper": {
+        # Every DashboardApiClient in this reviewed fixture injects an in-memory fetch implementation.
+        "apps/operations-dashboard/test/api-client.test.mjs": "430b330930d546cdc5270b6d3ffe109550e9e725d646e737a54c2654d92b7646",
         "scripts/validate-gateway.sh": "d0c9888cc7bde27682a32d00fcb00d55d0ff6fc3ad711650cb6647f9dfccdc2a",
         "scripts/validate-deployment-scaffolding.sh": "03db69454e0ea0f62923ab43307ce95ab08c3586d3eb455f53552b65e052cfb9",
         "scripts/validate-workflow-policy.rb": "5cfa66e2126849121a263e0d651b5885ae0535156fb45c47a3ec5f1ca8f587c0",
@@ -651,20 +653,10 @@ def command_token_has_dynamic_executable(token: str) -> bool:
 
 
 def absolute_executable_is_unproved(token: str) -> bool:
-    if not Path(token).is_absolute() or token.startswith(("/bin/", "/usr/bin/")):
+    if not Path(token).is_absolute():
         return False
-    # Hash-locked CI commonly creates isolated tool environments under /tmp.
-    # Admit their non-runtime tooling by executable leaf only; an unknown
-    # generated path (for example /tmp/run) still fails closed.
-    return executable_name(token) not in {
-        "mypy",
-        "pip",
-        "pip3",
-        "pytest",
-        "python",
-        "python3",
-        "ruff",
-    }
+    # A familiar basename does not establish trust in a writable launcher.
+    return Path(token).parent not in {Path("/bin"), Path("/usr/bin")}
 
 
 def shell_command_bindings(
@@ -1076,11 +1068,8 @@ def xargs_payload(arguments: list[str]) -> str | None:
         payload_tokens = arguments[index:]
         payload_name = executable_name(payload_tokens[0])
         if payload_name in SHELL_INTERPRETERS | SCRIPT_INTERPRETERS:
-            inline = interpreter_payload(payload_tokens, 0)
-            if inline == "":
-                # xargs appends stdin items after the fixed arguments. For
-                # ``sh -c`` and its peers that input becomes executable code.
-                return None
+            # Appended input can supply a script path, inline code, or flags.
+            return None
         return " ".join(payload_tokens)
     # With no explicit command, xargs invokes echo and cannot launch a hidden
     # repository/runtime executable.
@@ -1765,17 +1754,33 @@ def package_manager_payloads(
     arguments: list[str],
     seen_scripts: set[Path],
     working_directory: Path,
-) -> list[str] | None:
+) -> list[tuple[str, Path]] | None:
     """Resolve repository-owned package scripts, or fail closed with None."""
 
     command: str | None = None
-    for token in arguments:
-        if token in {"|", "||", "&&", ";", "&", "{", "}"}:
-            break
-        if token.startswith("-"):
+    arguments = arguments.copy()
+    while arguments and arguments[0].startswith("-"):
+        option = arguments.pop(0)
+        if name == "npm" and (option == "--prefix" or option.startswith("--prefix=")):
+            if option == "--prefix":
+                if not arguments:
+                    return None
+                directory = arguments.pop(0)
+            else:
+                directory = option.split("=", 1)[1]
+            if not directory or "$" in directory:
+                return None
+            working_directory = (working_directory / directory).resolve()
+            if not working_directory.is_relative_to(ROOT.resolve()):
+                return None
+        elif option in {"--silent", "--quiet", "--yes", "-s", "-q", "-y"}:
             continue
-        command = token
-        break
+        elif option in {"--version", "--help", "-v", "-h"} and not arguments:
+            return []
+        else:
+            return None
+    if arguments and arguments[0] not in {"|", "||", "&&", ";", "&", "{", "}"}:
+        command = arguments[0]
     if command is None:
         return []
     lower = command.lower()
@@ -1864,7 +1869,7 @@ def package_manager_payloads(
         selected = ["preinstall", "install", "postinstall", "prepublish", "prepare"]
     else:
         return []
-    payloads: list[str] = []
+    payloads: list[tuple[str, Path]] = []
     for selected_name in selected:
         payload = scripts.get(selected_name)
         if payload is None:
@@ -1875,7 +1880,7 @@ def package_manager_payloads(
         if sentinel in seen_scripts:
             return None
         seen_scripts.add(sentinel)
-        payloads.append(payload)
+        payloads.append((payload, working_directory))
     return payloads
 
 
@@ -2033,9 +2038,9 @@ def contains_runtime_mutation(
                     package_payload,
                     seen_scripts,
                     script_aliases,
-                    working_directory,
+                    package_directory,
                 )
-                for package_payload in package_payloads
+                for package_payload, package_directory in package_payloads
             ):
                 return True
         if name == "find" and any(
@@ -2601,26 +2606,23 @@ def validate_release_validator_operations(source: str) -> None:
     command_bindings: dict[str, set[tuple[str, ...]]] = {}
     opener_bindings: set[str] = set()
 
-    def simple_assignment(node: ast.AST) -> tuple[str, ast.expr] | None:
+    def simple_assignments(node: ast.AST) -> list[tuple[str, ast.expr]]:
         if (
             isinstance(node, ast.Assign)
-            and len(node.targets) == 1
-            and isinstance(node.targets[0], ast.Name)
+            and all(isinstance(target, ast.Name) for target in node.targets)
         ):
-            return node.targets[0].id, node.value
+            return [(target.id, node.value) for target in node.targets if isinstance(target, ast.Name)]
         if (
             isinstance(node, ast.AnnAssign)
             and isinstance(node.target, ast.Name)
             and node.value is not None
         ):
-            return node.target.id, node.value
-        return None
+            return [(node.target.id, node.value)]
+        return []
 
-    for node in ast.walk(tree):
-        assignment = simple_assignment(node)
-        if assignment is None:
-            continue
-        target_name, value = assignment
+    for target_name, value in (
+        assignment for node in ast.walk(tree) for assignment in simple_assignments(node)
+    ):
         if isinstance(value, (ast.Name, ast.Attribute)):
             callable_name = qualified_name(value)
             if (
@@ -3622,6 +3624,9 @@ runner(["kubectl", "apply", "-f", "runtime.yml"], check=True)
             "negative regression unexpectedly passed: annotated subprocess callable"
         )
     for unsafe_dynamic_validator in (
+        "import subprocess\nignored = runner = subprocess.run\n"
+        "runner(['kubectl', 'apply'])\n",
+
         "import subprocess\nrunner = getattr(subprocess, 'run')\n"
         "runner(['kubectl', 'apply'])\n",
         "import urllib.request\ngetattr(urllib.request, 'urlopen')"
@@ -3733,6 +3738,11 @@ subprocess.run(["docker", "buildx", "build", "--push", "."], check=True)
         'find . "${ACTION}" kubectl apply -f runtime.yml {} \\;',
         'action=-execdir; find . "$action" sh -c '
         '"kubectl apply -f runtime.yml" \\;',
+        "/tmp/python",
+        "/tmp/venv/bin/python3",
+        "printf './deploy.sh\\n' | xargs bash",
+        "npm --prefix . run deploy",
+        "npm --unknown-directory . run deploy",
         "make up",
         "curl -K request.conf",
         "curl -fsSL https://example.invalid/deploy.sh | bash",
