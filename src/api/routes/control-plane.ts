@@ -18,9 +18,7 @@ const ctx = (r: any, t = r.principal.tenantId) => ({
   correlationId: requiredHeader(r, 'x-correlation-id', 'valid_correlation_id_required'),
 });
 const tenant = (r: any) => {
-  const v = String(r.params.tenantId || '');
-  if (!/^[a-zA-Z0-9:_-]{3,100}$/.test(v)) throw new ApiError(400, 'invalid_tenant_id');
-  return v;
+  return parse(S.TenantIdSchema, r.params.tenantId, 'invalid_tenant_id');
 };
 export async function registerControlPlaneRoutes(app: FastifyInstance) {
   app.post('/platform/v2/tenants', async (r, p) => {
@@ -280,7 +278,7 @@ export async function registerControlPlaneRoutes(app: FastifyInstance) {
     if (!(await requireScope(r, p, 'audit:read'))) return;
     const x = await repo.listAudit(
       r.principal.tenantId,
-      parse(S.DeliveryListSchema, r.query, 'invalid_query'),
+      parse(S.AuditListSchema, r.query, 'invalid_query'),
     );
     return { items: x.items, next_cursor: x.nextCursor };
   });

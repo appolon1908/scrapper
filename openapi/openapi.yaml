@@ -291,6 +291,10 @@ paths:
         - $ref: '#/components/parameters/CorrelationHeader'
         - $ref: '#/components/parameters/JobId'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Cancellation accepted
           content:
@@ -316,6 +320,10 @@ paths:
         - $ref: '#/components/parameters/CorrelationHeader'
         - $ref: '#/components/parameters/JobId'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Cancellation accepted
           content:
@@ -340,6 +348,10 @@ paths:
         - $ref: '#/components/parameters/CorrelationHeader'
         - $ref: '#/components/parameters/JobId'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '202':
           description: Retry accepted
           content:
@@ -365,6 +377,10 @@ paths:
         - $ref: '#/components/parameters/CorrelationHeader'
         - $ref: '#/components/parameters/JobId'
       responses:
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '202':
           description: Retry accepted
           content:
@@ -438,7 +454,11 @@ paths:
   /platform/v2/tenants:
     get:
       summary: Read /platform/v2/tenants
+      parameters:
+        - $ref: '#/components/parameters/TenantCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -448,6 +468,12 @@ paths:
     post:
       summary: Command /platform/v2/tenants
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -479,7 +505,11 @@ paths:
   /api/v2/sources:
     get:
       summary: Read /api/v2/sources
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -489,6 +519,12 @@ paths:
     post:
       summary: Command /api/v2/sources
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -500,7 +536,11 @@ paths:
   /api/v2/schedules:
     get:
       summary: Read /api/v2/schedules
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -510,6 +550,12 @@ paths:
     post:
       summary: Command /api/v2/schedules
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -521,7 +567,11 @@ paths:
   /api/v2/integrations:
     get:
       summary: Read /api/v2/integrations
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -531,6 +581,12 @@ paths:
     post:
       summary: Command /api/v2/integrations
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -542,7 +598,11 @@ paths:
   /api/v2/businesses:
     get:
       summary: Read /api/v2/businesses
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -562,7 +622,11 @@ paths:
   /api/v2/reviews:
     get:
       summary: Read /api/v2/reviews
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -572,7 +636,11 @@ paths:
   /api/v2/outbox:
     get:
       summary: Read /api/v2/outbox
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -582,7 +650,11 @@ paths:
   /api/v2/inbox:
     get:
       summary: Read /api/v2/inbox
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -592,7 +664,11 @@ paths:
   /api/v2/dead-letters:
     get:
       summary: Read /api/v2/dead-letters
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -602,7 +678,11 @@ paths:
   /api/v2/exports:
     get:
       summary: Read /api/v2/exports
+      parameters:
+        - $ref: '#/components/parameters/ControlPlaneCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -612,6 +692,12 @@ paths:
     post:
       summary: Command /api/v2/exports
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -623,7 +709,11 @@ paths:
   /api/v2/audit-events:
     get:
       summary: Read /api/v2/audit-events
+      parameters:
+        - $ref: '#/components/parameters/AuditCursor'
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '200':
           description: Success
         '401':
@@ -644,6 +734,12 @@ paths:
     post:
       summary: Command /platform/v2/tenants/{tenantId}/activate
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -656,6 +752,12 @@ paths:
     post:
       summary: Command /platform/v2/tenants/{tenantId}/suspend
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -668,6 +770,12 @@ paths:
     post:
       summary: Command /platform/v2/tenants/{tenantId}/decommission
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -680,6 +788,12 @@ paths:
     post:
       summary: Command /api/v2/sources/{id}/validate
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -692,6 +806,12 @@ paths:
     post:
       summary: Command /api/v2/schedules/{id}/pause
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -704,6 +824,12 @@ paths:
     post:
       summary: Command /api/v2/schedules/{id}/resume
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -716,6 +842,12 @@ paths:
     post:
       summary: Command /api/v2/integrations/{id}/pause
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -728,6 +860,12 @@ paths:
     post:
       summary: Command /api/v2/integrations/{id}/resume
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -740,6 +878,12 @@ paths:
     post:
       summary: Command /api/v2/reviews/{id}/approve
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -752,6 +896,12 @@ paths:
     post:
       summary: Command /api/v2/reviews/{id}/reject
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -764,6 +914,12 @@ paths:
     post:
       summary: Command /api/v2/reviews/{id}/merge
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -776,6 +932,12 @@ paths:
     post:
       summary: Command /api/v2/reviews/{id}/split
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -788,6 +950,12 @@ paths:
     post:
       summary: Command /api/v2/reviews/{id}/reopen
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -800,6 +968,12 @@ paths:
     post:
       summary: Command /api/v2/outbox/{id}/replay
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '201':
@@ -812,6 +986,12 @@ paths:
     patch:
       summary: Update /api/v2/sources/{id}
       responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
         '200':
           description: Success
         '409':
@@ -822,6 +1002,28 @@ components:
       type: http
       scheme: bearer
   parameters:
+    ControlPlaneCursor:
+      name: cursor
+      in: query
+      description: UUID returned as next_cursor by the previous page.
+      schema:
+        type: string
+        format: uuid
+    TenantCursor:
+      name: cursor
+      in: query
+      description: Tenant identifier returned as next_cursor by the previous page.
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9:_-]{3,100}$'
+    AuditCursor:
+      name: cursor
+      in: query
+      description: Positive decimal audit ID, at most 9223372036854775807. Kept as a string to preserve integer precision.
+      schema:
+        type: string
+        maxLength: 19
+        pattern: '^[1-9][0-9]{0,18}$'
     TenantHeader:
       name: x-tenant-id
       in: header

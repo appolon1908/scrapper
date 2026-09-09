@@ -1,7 +1,8 @@
 import { z } from 'zod';
+export const TenantIdSchema = z.string().regex(/^[a-zA-Z0-9:_-]{3,100}$/);
 const page = z.object({
   limit: z.coerce.number().int().min(1).max(200).default(50),
-  cursor: z.string().max(200).optional(),
+  cursor: z.string().uuid().optional(),
   search: z.string().max(200).optional(),
 });
 const url = z
@@ -10,13 +11,14 @@ const url = z
   .refine((v) => ['http:', 'https:'].includes(new URL(v).protocol), 'http_or_https_required');
 export const TenantCreateSchema = z
   .object({
-    tenantId: z.string().min(3).max(100).optional(),
+    tenantId: TenantIdSchema.optional(),
     slug: z.string().regex(/^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$/),
     displayName: z.string().min(2).max(200),
     plan: z.enum(['sandbox', 'standard', 'growth', 'enterprise']).default('standard'),
   })
   .strict();
 export const TenantListSchema = page.extend({
+  cursor: TenantIdSchema.optional(),
   status: z.enum(['draft', 'ready_read_only', 'active', 'suspended', 'decommissioned']).optional(),
 });
 export const VersionSchema = z.object({ version: z.number().int().min(1) }).strict();
@@ -72,6 +74,16 @@ export const ReviewDecisionSchema = VersionSchema.extend({
   note: z.string().max(2000).default(''),
 }).strict();
 export const DeliveryListSchema = page.extend({ status: z.string().max(50).optional() });
+export const AuditListSchema = DeliveryListSchema.extend({
+  cursor: z
+    .string()
+    .regex(/^[1-9][0-9]{0,18}$/)
+    .refine(
+      (value) => /^[1-9][0-9]{0,18}$/.test(value) && BigInt(value) <= 9223372036854775807n,
+      'audit_cursor_out_of_range',
+    )
+    .optional(),
+});
 export const ExportCreateSchema = z
   .object({
     resourceType: z.enum(['businesses', 'jobs', 'audit', 'reviews', 'deliveries']),
