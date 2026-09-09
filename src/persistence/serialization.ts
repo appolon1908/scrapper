@@ -25,12 +25,14 @@ export function encodeCursor(createdAt: Date, id: string): string {
 export function decodeCursor(cursor: string | undefined): { createdAt: string; id: string } | null {
   if (!cursor) return null;
   try {
-    const [createdAt, id, ...extra] = Buffer.from(cursor, 'base64url').toString('utf8').split('|');
+    const decoded = Buffer.from(cursor, 'base64url');
+    if (decoded.toString('base64url') !== cursor) return null;
+    const [createdAt, id, ...extra] = decoded.toString('utf8').split('|');
     if (
       extra.length ||
       !createdAt ||
       !id ||
-      Number.isNaN(Date.parse(createdAt)) ||
+      new Date(createdAt).toISOString() !== createdAt ||
       !UUID_PATTERN.test(id)
     ) {
       return null;
