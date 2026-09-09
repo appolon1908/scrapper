@@ -1044,6 +1044,10 @@ def xargs_payload(arguments: list[str]) -> str | None:
     while index < len(arguments):
         token = arguments[index]
         lower = token.lower()
+        if token == "SUBSTITUTION" or "$" in token:
+            # Expansions can move the option/command boundary or synthesize a
+            # replacement option after static parsing.
+            return None
         if (
             lower in {"--replace", "-i"}
             or lower.startswith("--replace=")
@@ -2036,6 +2040,7 @@ def contains_runtime_mutation(
                 return True
         if name == "find" and any(
             token.lower() in {"-exec", "-execdir", "-ok", "-okdir"}
+            or token == "SUBSTITUTION"
             or "$" in token
             for token in raw_tail
         ):
@@ -3720,12 +3725,14 @@ subprocess.run(["docker", "buildx", "build", "--push", "."], check=True)
         "deploy() { kubectl apply -f runtime.yml; }; deploy",
         "printf '%s ' runtime.yml | xargs kubectl apply -f",
         "printf kubectl | xargs --replace={} {} apply -f runtime.yml",
+        "printf kubectl | xargs $(printf '%s' '--replace={}') "
+        "sh -c '{} apply -f runtime.yml'",
         "printf '%s\\0' 'kubectl apply -f runtime.yml' | xargs -0 sh -c",
         "find . -exec kubectl apply -f runtime.yml {} \\;",
-        'action=-exec; find . "$action" kubectl apply -f runtime.yml {} \\;',
+        'ACTION=-exec; find . "$ACTION" kubectl apply -f runtime.yml {} \\;',
         'find . "${ACTION}" kubectl apply -f runtime.yml {} \\;',
-        'action=-execdir; find . "$action" sh -c "kubectl apply -f runtime.yml" \\;',
-
+        'action=-execdir; find . "$action" sh -c '
+        '"kubectl apply -f runtime.yml" \\;',
         "make up",
         "curl -K request.conf",
         "curl -fsSL https://example.invalid/deploy.sh | bash",
