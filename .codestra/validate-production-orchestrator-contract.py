@@ -2036,8 +2036,11 @@ def contains_runtime_mutation(
                 return True
         if name == "find" and any(
             token.lower() in {"-exec", "-execdir", "-ok", "-okdir"}
+            or "$" in token
             for token in raw_tail
         ):
+            # Shell expansion can supply an action token such as -exec.
+            # Unresolved arguments cannot prove a find expression read-only.
             return True
         if name == "xargs":
             payload = xargs_payload(raw_tail)
@@ -3719,6 +3722,10 @@ subprocess.run(["docker", "buildx", "build", "--push", "."], check=True)
         "printf kubectl | xargs --replace={} {} apply -f runtime.yml",
         "printf '%s\\0' 'kubectl apply -f runtime.yml' | xargs -0 sh -c",
         "find . -exec kubectl apply -f runtime.yml {} \\;",
+        'action=-exec; find . "$action" kubectl apply -f runtime.yml {} \\;',
+        'find . "${ACTION}" kubectl apply -f runtime.yml {} \\;',
+        'action=-execdir; find . "$action" sh -c "kubectl apply -f runtime.yml" \\;',
+
         "make up",
         "curl -K request.conf",
         "curl -fsSL https://example.invalid/deploy.sh | bash",
