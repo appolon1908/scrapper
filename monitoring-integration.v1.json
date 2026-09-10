@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "repository": "appolon1908-hue/scrapper",
-  "design_group": "Applications/websites",
-  "monitoring_profile": "runtime-or-website",
+  "design_group": "Archival source",
+  "monitoring_profile": "release-and-dependency",
   "controller_repository": "appolon1908-hue/Middleware-",
   "design_url": "https://github.com/appolon1908-hue/Infustruction-repo/blob/afeea11b86d296874ec12ce6e8615400240bc72f/INTEGRATED-MONITORING-DESIGN.md",
   "api_contract_url": "https://raw.githubusercontent.com/appolon1908-hue/Middleware-/cedaa23b89f84f365ae6789413411c3f01516952/contracts/observability/integrated-monitoring.openapi.json",
@@ -12,12 +12,7 @@
   "runtime_coverage": "unverified",
   "activation_enabled": false,
   "required_identity_fields": [
-    "service_id",
-    "environment",
-    "tenant_id",
-    "source_deployment",
     "git_sha",
-    "image_digest",
     "config_digest"
   ],
   "signal_owners": {
@@ -39,11 +34,11 @@
   "completion_evidence_required": [
     "exact_commit_ci",
     "approved_release",
-    "registered_service_units",
-    "fresh_telemetry",
-    "endpoint_contract_digest",
-    "private_authentication",
-    "alert_delivery",
-    "restore_and_rollback"
-  ]
+    "repository_ownership",
+    "dependency_inventory"
+  ],
+  "repository_id": 1329513537,
+  "runtime_onboarding_allowed": false,
+  "repository_lifecycle": "archival",
+  "canonical_runtime_repository": "appolon1908-hue/kyqra-crawler"
 }
