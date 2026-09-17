@@ -140,6 +140,8 @@ jobs:
 
   publish:
     name: publish
+    # RUNTIME_MUTATION_DISABLED=true
+    if: ${{ false }}
     needs: [verify, deployment-policy, branch-governance, gateway-validation]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -233,6 +235,9 @@ jobs:
 
   ephemeral-staging:
     name: ephemeral-staging
+    # RUNTIME_MUTATION_DISABLED=true
+    # Repository-only preparation does not authorize staging or rollback execution.
+    if: ${{ false }}
     needs: [publish, gateway-validation]
     runs-on: ubuntu-24.04
     timeout-minutes: 45

@@ -1,0 +1,40 @@
+{
+  "schema_version": "codestra.production-orchestrator-contract.v1",
+  "repository": "appolon1908-hue/scrapper",
+  "repository_id": 1329513537,
+  "default_branch": "main",
+  "role": "migration-evidence",
+  "release_intent_workflow": ".github/workflows/manual-release-intent.yml",
+  "deployment_authority": false,
+  "runtime_mutation_authority": false,
+  "require_verified_commit": true,
+  "required_check_app_id": 15368,
+  "required_checks": ["orchestrator-contract", "deployment-policy", "validate"],
+  "supported_phases": ["plan"],
+  "artifact_policy": {
+    "minimum_images": 0,
+    "maximum_images": 0,
+    "image_repositories": [],
+    "require_digest": true,
+    "allow_rebuild_after_staging": false,
+    "allow_retag_after_staging": false,
+    "require_sbom": false,
+    "require_provenance": false,
+    "require_signature": false
+  },
+  "environments": {},
+  "native_workflows": {},
+  "safety": {
+    "external_effects_default": false,
+    "live_email_delivery": false,
+    "live_sms_delivery": false,
+    "live_pstn_dialing": false,
+    "odoo_write": false,
+    "n8n_external_delivery": false,
+    "live_trading": false,
+    "payment_execution": false
+  },
+  "blockers": [
+    "This repository supplies migration evidence only; kyqra-crawler retains crawler runtime deployment authority."
+  ]
+}
