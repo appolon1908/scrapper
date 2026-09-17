@@ -16,7 +16,17 @@ const KNOWN_ERRORS: Record<string, { statusCode: number; code: string }> = {
   not_found: { statusCode: 404, code: 'not_found' },
   job_not_found: { statusCode: 404, code: 'not_found' },
   invalid_cursor: { statusCode: 400, code: 'invalid_cursor' },
+  source_version_conflict: { statusCode: 409, code: 'source_version_conflict' },
   invalid_tenant_transition: { statusCode: 409, code: 'invalid_tenant_transition' },
+};
+
+const REQUEST_ERRORS: Record<string, { statusCode: number; code: string }> = {
+  FST_ERR_CTP_INVALID_JSON_BODY: { statusCode: 400, code: 'invalid_json' },
+  FST_ERR_CTP_EMPTY_JSON_BODY: { statusCode: 400, code: 'invalid_json' },
+  FST_ERR_CTP_INVALID_CONTENT_LENGTH: { statusCode: 400, code: 'invalid_content_length' },
+  FST_ERR_CTP_BODY_TOO_LARGE: { statusCode: 413, code: 'payload_too_large' },
+  FST_ERR_CTP_INVALID_MEDIA_TYPE: { statusCode: 415, code: 'unsupported_media_type' },
+  FST_ERR_VALIDATION: { statusCode: 400, code: 'invalid_request' },
 };
 
 export function installApiErrorHandling(app: FastifyInstance): void {
@@ -37,13 +47,26 @@ export function installApiErrorHandling(app: FastifyInstance): void {
       return;
     }
 
+    const frameworkCode =
+      error instanceof Error && 'code' in error && typeof error.code === 'string' ? error.code : '';
+    const requestError = Object.hasOwn(REQUEST_ERRORS, frameworkCode)
+      ? REQUEST_ERRORS[frameworkCode]
+      : undefined;
+    if (requestError) {
+      await reply.code(requestError.statusCode).send({
+        error: requestError.code,
+        request_id: request.id,
+      });
+      return;
+    }
+
     const message =
       error instanceof Error && error.message
         ? error.message
         : typeof error === 'string' && error
           ? error
           : 'internal_error';
-    const known = KNOWN_ERRORS[message];
+    const known = Object.hasOwn(KNOWN_ERRORS, message) ? KNOWN_ERRORS[message] : undefined;
     if (known) {
       await reply.code(known.statusCode).send({
         error: known.code,
@@ -54,7 +77,7 @@ export function installApiErrorHandling(app: FastifyInstance): void {
 
     log('error', 'http_request_failed', {
       requestId: request.id,
-      error: message,
+      error: 'internal_error',
     });
     await reply.code(500).send({
       error: 'internal_error',
