@@ -70,12 +70,7 @@ export type JobListQuery = z.infer<typeof JobListQuerySchema>;
 export type ResultListQuery = z.infer<typeof ResultListQuerySchema>;
 
 export type JobStatus =
-  | 'queued'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancel_requested'
-  | 'cancelled';
+  'queued' | 'running' | 'completed' | 'failed' | 'cancel_requested' | 'cancelled';
 
 export type Evidence = {
   sourceUrl: string;

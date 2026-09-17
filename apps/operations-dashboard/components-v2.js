@@ -262,8 +262,8 @@ export function renderResults(state) {
   const visible = filterResults(state.results, state.resultFilters);
   const filtersActive = Boolean(
     state.resultFilters.search ||
-      Number(state.resultFilters.minConfidence) > 0 ||
-      state.resultFilters.contact !== 'any',
+    Number(state.resultFilters.minConfidence) > 0 ||
+    state.resultFilters.contact !== 'any',
   );
   return `<section class="view-stack" aria-labelledby="results-heading">
     <div class="page-heading"><div><p class="eyebrow">Resolved entities</p><h1 id="results-heading">Business results</h1><p>Search and filter the currently loaded result page, inspect evidence, and export only the visible view.</p></div><div class="page-heading__actions"><button class="button button--secondary" type="button" data-export-results="csv"${visible.length ? '' : ' disabled'}>${icon('download', 17)} CSV</button><button class="button button--secondary" type="button" data-export-results="json"${visible.length ? '' : ' disabled'}>${icon('download', 17)} JSON</button></div></div>
