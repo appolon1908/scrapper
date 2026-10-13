@@ -24,17 +24,17 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run format-check"
   },
   "dependencies": {
-    "@crawlee/cheerio": "3.18.1",
-    "@crawlee/core": "3.18.1",
-    "@crawlee/playwright": "3.18.1",
-    "bullmq": "6.2.2",
+    "@crawlee/cheerio": "3.18.2",
+    "@crawlee/core": "3.18.2",
+    "@crawlee/playwright": "3.18.2",
+    "bullmq": "6.3.12",
     "cheerio": "1.2.0",
-    "fastify": "5.12.1",
+    "fastify": "5.12.5",
     "ioredis": "6.0.0",
-    "pg": "8.23.0",
-    "playwright": "1.63.0",
-    "undici": "8.10.0",
-    "zod": "4.4.3"
+    "pg": "8.23.1",
+    "playwright": "1.64.0",
+    "undici": "8.11.2",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
