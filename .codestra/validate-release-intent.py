@@ -63,7 +63,7 @@ CATALOG_REPOSITORIES = {
     "appolon1908-hue/beyvra-backend",
     "appolon1908-hue/backend2",
     "appolon1908-hue/beyvra-frontend",
-    "appolon1908-hue/scrapper",
+    "appolon1908/scrapper",
     "appolon1908-hue/Breero.com",
     "appolon1908-hue/Moneybee-Backend",
     "appolon1908-hue/Telnexa-web",
@@ -126,7 +126,7 @@ EXPECTED_CHECK_WORKFLOWS = {
         "secrets": ".github/workflows/ci.yml",
         "validate": ".github/workflows/ci.yml",
     },
-    "appolon1908-hue/scrapper": {
+    "appolon1908/scrapper": {
         "orchestrator-contract": ".github/workflows/production-orchestrator-contract.yml",
         "deployment-policy": ".github/workflows/ci.yml",
         "validate": ".github/workflows/ci.yml",
@@ -189,7 +189,7 @@ EXPECTED_CHECK_WORKFLOW_SHA256 = {
         ".github/workflows/production-orchestrator-contract.yml": ORCHESTRATOR_CONTRACT_WORKFLOW_SHA256,
         ".github/workflows/ci.yml": "7459a31c6b005e9345661b10ee8df45a570ac652280a2eacbcdfd4673fb115da",
     },
-    "appolon1908-hue/scrapper": {
+    "appolon1908/scrapper": {
         ".github/workflows/production-orchestrator-contract.yml": ORCHESTRATOR_CONTRACT_WORKFLOW_SHA256,
         ".github/workflows/ci.yml": "31d81c5be094a1510bc821ef4359bba591630d2273662f5de0683205d908c60d",
     },
@@ -227,6 +227,10 @@ MIDDLEWARE_PRODUCTION_VALIDATOR_SHA256 = (
 BACKEND_PRODUCTION_VALIDATOR_SHA256 = (
     "6006bbc7850ce7666de926b6cad2585b"
     "83d2fce102104543b871530f11115f20"
+)
+SCRAPPER_PRODUCTION_VALIDATOR_SHA256 = (
+    "32accd209064a9168e44ab106c66e68a"
+    "44b5078722f59ca3110ada268d3cc083"
 )
 EXPECTED_CHECK_WORKFLOW_EXECUTABLE_SHA256 = {
     "appolon1908-hue/Infustruction-repo": {
@@ -320,9 +324,9 @@ EXPECTED_CHECK_WORKFLOW_EXECUTABLE_SHA256 = {
             ".codestra/validate-production-orchestrator-contract.py": SHARED_PRODUCTION_VALIDATOR_SHA256,
         },
     },
-    "appolon1908-hue/scrapper": {
+    "appolon1908/scrapper": {
         ".github/workflows/production-orchestrator-contract.yml": {
-            ".codestra/validate-production-orchestrator-contract.py": SHARED_PRODUCTION_VALIDATOR_SHA256,
+            ".codestra/validate-production-orchestrator-contract.py": SCRAPPER_PRODUCTION_VALIDATOR_SHA256,
         },
     },
     "appolon1908-hue/Breero.com": {
@@ -401,7 +405,7 @@ EXPECTED_REQUIRED_CHECK_SOURCE_CLOSURE_SHA256 = {
         "ce51e23c535871d23306264bb3806bb1"
         "3a710efeb649e0247e3377ac929ab5eb"
     ),
-    "appolon1908-hue/scrapper": (
+    "appolon1908/scrapper": (
         "783feb31fc0ada4b043a62bf53dbfc1f"
         "19ad25962daeeff809b9a9d391b1e2f0"
     ),

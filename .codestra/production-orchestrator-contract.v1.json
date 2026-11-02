@@ -1,6 +1,6 @@
 {
   "schema_version": "codestra.production-orchestrator-contract.v1",
-  "repository": "appolon1908-hue/scrapper",
+  "repository": "appolon1908/scrapper",
   "repository_id": 1329513537,
   "default_branch": "main",
   "role": "migration-evidence",
