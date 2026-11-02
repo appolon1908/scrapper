@@ -13,6 +13,16 @@
       "context": "gateway",
       "integration_id": 15368,
       "workflow": ".github/workflows/gateway-validation.yml"
+    },
+    {
+      "context": "deployment-policy",
+      "integration_id": 15368,
+      "workflow": ".github/workflows/ci.yml"
+    },
+    {
+      "context": "orchestrator-contract",
+      "integration_id": 15368,
+      "workflow": ".github/workflows/production-orchestrator-contract.yml"
     }
   ],
   "replaces_contexts": [

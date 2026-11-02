@@ -29,6 +29,7 @@ RELEASE_VALIDATOR_NON_SELF_REFERENTIAL_BINDINGS = frozenset(
         "KEYCLOAK_PRODUCTION_VALIDATOR_SHA256",
         "MIDDLEWARE_PRODUCTION_VALIDATOR_SHA256",
         "BACKEND_PRODUCTION_VALIDATOR_SHA256",
+        "SCRAPPER_PRODUCTION_VALIDATOR_SHA256",
         "EXPECTED_REQUIRED_CHECK_SOURCE_CLOSURE_SHA256",
     }
 )
@@ -56,7 +57,7 @@ EXPECTED_RELEASE_VALIDATOR_SECURITY_SHA256 = {
     "appolon1908-hue/beyvra-backend": BACKEND_RELEASE_VALIDATOR_SECURITY_SHA256,
     "appolon1908-hue/backend2": STANDARD_RELEASE_VALIDATOR_SECURITY_SHA256,
     "appolon1908-hue/beyvra-frontend": STANDARD_RELEASE_VALIDATOR_SECURITY_SHA256,
-    "appolon1908-hue/scrapper": STANDARD_RELEASE_VALIDATOR_SECURITY_SHA256,
+    "appolon1908/scrapper": '3bd164ec7497f18e53cef877ae477f5475ff6401333e00ed0ba6c23087e5619f',
     "appolon1908-hue/Breero.com": STANDARD_RELEASE_VALIDATOR_SECURITY_SHA256,
     "appolon1908-hue/Moneybee-Backend": MONEYBEE_RELEASE_VALIDATOR_SECURITY_SHA256,
     "appolon1908-hue/Telnexa-web": STANDARD_RELEASE_VALIDATOR_SECURITY_SHA256,
@@ -364,7 +365,7 @@ EXPECTED_IDENTITIES: dict[str, tuple[int, str, bool, bool]] = {
     "appolon1908-hue/beyvra-backend": (1319831182, "application", True, False),
     "appolon1908-hue/backend2": (1319903950, "application", True, False),
     "appolon1908-hue/beyvra-frontend": (1320246591, "application", True, False),
-    "appolon1908-hue/scrapper": (1329513537, "migration-evidence", False, False),
+    "appolon1908/scrapper": (1329513537, "migration-evidence", False, False),
     "appolon1908-hue/Breero.com": (1331354808, "application", True, False),
     "appolon1908-hue/Moneybee-Backend": (1343760409, "application", True, False),
     "appolon1908-hue/Telnexa-web": (1346958528, "application", True, False),
@@ -418,7 +419,7 @@ EXPECTED_ARTIFACT_POLICIES: dict[
         "github",
         "oci",
     ),
-    "appolon1908-hue/scrapper": ((), False, False, False, None, None),
+    "appolon1908/scrapper": ((), False, False, False, None, None),
     "appolon1908-hue/Breero.com": (
         (
             "ghcr.io/appolon1908-hue/breero-api",
@@ -563,7 +564,12 @@ APPROVED_COMPLEX_SCRIPT_SHA256: dict[str, dict[str, str]] = {
             "901ec8487c6b34f032e53810f12a5a30"
         ),
     },
-    "appolon1908-hue/scrapper": {
+    "appolon1908/scrapper": {
+        'test/unit-api-errors.test.mjs': '953e2bd8e0db3cab68115b0c59ec5858b5a2d9951b70951cc5ea8de2f0b70f28',
+        'test/unit-auth-registry.test.mjs': '230e008eed3d644977a8d70f3b69521b871ab0c53e4583fcc5ce86c47f8eef2e',
+        'test/unit-control-plane-inputs.test.mjs': 'e0c41adacbdf60ddea12f76d096f4ec99091685654918d5cf957f41e57af3fca',
+        'test/unit-job-cursor.test.mjs': '031ca1c15de23b8c9b9c6560c1ea4620450ba5300e23bad98222c74b3c11fbd2',
+        'test/unit-source-validation.test.mjs': '1befe287ed82083024f86d28658bd28fd7ddf32ecd6fb7b5815d0a9dfe488782',
         "apps/operations-dashboard/test/api-client.test.mjs": (
             "430b330930d546cdc5270b6d3ffe10955"
             "0e9e725d646e737a54c2654d92b7646"
@@ -577,8 +583,8 @@ APPROVED_COMPLEX_SCRIPT_SHA256: dict[str, dict[str, str]] = {
             "61f83135f2ab3c56a10ddbef394e55b1"
         ),
         "test/integration-runtime.test.mjs": (
-            "57acccbee1522daa07b513a23a212bc7"
-            "62353ef1d0998cbbe1fe603927b56697"
+            "3f00bb0a33309357d5a347ab08980ffd"
+            "0dbe9b1527e553ba873af4ad05a8b40c"
         ),
         "test/unit-discovery-import.test.mjs": (
             "9fd2939f0fba91d88e47b2acb76cdc53"
@@ -601,8 +607,8 @@ APPROVED_COMPLEX_SCRIPT_SHA256: dict[str, dict[str, str]] = {
             "06e6c6c9705c4c6339a462da5b6691db"
         ),
         "test/unit-url-policy.test.mjs": (
-            "5218de57f97201b47e51e10943151037"
-            "b93ba8b7b883c5ed1462578f76a44849"
+            "56991dd588d42fb137b4d88518f58820"
+            "ee7ea921f28cd5470103f38e895dfe01"
         ),
     },
     "appolon1908-hue/Breero.com": {
@@ -704,15 +710,15 @@ APPROVED_CONTROL_PLANE_WORKFLOW_SHA256: dict[str, dict[str, str]] = {
     "appolon1908-hue/beyvra-frontend": {
         ".github/workflows/ci.yml": "7459a31c6b005e9345661b10ee8df45a570ac652280a2eacbcdfd4673fb115da",
     },
-    "appolon1908-hue/scrapper": {
-        ".github/workflows/ci.yml": "31d81c5be094a1510bc821ef4359bba591630d2273662f5de0683205d908c60d",
+    "appolon1908/scrapper": {
+        ".github/workflows/ci.yml": "fd97a6c3ec79b57bafff66b0533bc4c74e7a71089fd8d13bb0eb4f8a03571a36",
         ".github/workflows/dashboard-ci.yml": (
-            "1f4c4add5bae50bc11fc2c7693c9a7ed"
-            "e79f89300da81b9f7a6904d30462dac7"
+            "29164c67dcc9f908b69a5da38f9aebb0"
+            "d3cf2598c6f49b827ee40918e6ad1cf4"
         ),
         ".github/workflows/release-readiness.yml": (
-            "22fb9e9447770c5b463b028d9ef6195d"
-            "f53fbc99b2e8a467ba11e7a2b58b167b"
+            "56c8969f991836ddb954a70156aae64b"
+            "4d4ef19b9015e47f3c9a373b519454af"
         ),
     },
     "appolon1908-hue/Breero.com": {
@@ -750,9 +756,9 @@ APPROVED_JOB_EXECUTABLE_CONFIGURATION_SHA256: dict[str, dict[str, str]] = {
         ".github/workflows/security-command-ci.yml": "a47a0f78eb38348b2c23e784e9048b1311297ffe30080c4b063048b296e66d41",
         ".github/workflows/workspace-api.yml": "abf3d41bfe718ecd343cd540ea27cd330c16294b192a7aa37f0435b895cc90b5",
     },
-    "appolon1908-hue/scrapper": {
-        ".github/workflows/ci.yml": "31d81c5be094a1510bc821ef4359bba591630d2273662f5de0683205d908c60d",
-        ".github/workflows/release-readiness.yml": "22fb9e9447770c5b463b028d9ef6195df53fbc99b2e8a467ba11e7a2b58b167b",
+    "appolon1908/scrapper": {
+        ".github/workflows/ci.yml": "fd97a6c3ec79b57bafff66b0533bc4c74e7a71089fd8d13bb0eb4f8a03571a36",
+        ".github/workflows/release-readiness.yml": "56c8969f991836ddb954a70156aae64b4d4ef19b9015e47f3c9a373b519454af",
     },
     "appolon1908-hue/Breero.com": {
         ".github/workflows/backend-production.yml": (
@@ -6753,7 +6759,7 @@ def validate(contract: dict[str, Any]) -> None:
             workflow = path.read_text(encoding="utf-8")
             if workflow_has_runtime_mutation(workflow, relative):
                 require_mutating_jobs_disabled(workflow, relative)
-    if repository == "appolon1908-hue/scrapper":
+    if repository == "appolon1908/scrapper":
         for path in workflow_paths:
             relative = path.relative_to(ROOT).as_posix()
             workflow = path.read_text(encoding="utf-8")
